@@ -1,0 +1,17 @@
+# ===== IntelliJ =====
+.idea/
+*.iml
+
+# ===== Backend (Spring Boot) =====
+destinytracker/target/
+destinytracker/application.properties
+destinytracker/application.yml
+
+# ===== Frontend (future React) =====
+node_modules/
+dist/
+build/
+.env
+
+# ===== OS =====
+.DS_Store
