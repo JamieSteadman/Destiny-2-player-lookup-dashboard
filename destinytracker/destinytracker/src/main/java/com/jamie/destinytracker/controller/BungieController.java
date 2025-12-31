@@ -13,7 +13,12 @@ public class BungieController {
     }
 
     @PostMapping("/search")
-    public String findProfile(@RequestParam String name, @RequestParam int code) {
+    public String searchBungieName(@RequestParam String name, @RequestParam int code) {
         return bungieApiService.searchByBungieName(name, code);
+    }
+
+    @GetMapping("/profile")
+    public String getProfile(@RequestParam int membershipType, @RequestParam String membershipId) {
+        return bungieApiService.getProfile(membershipType, membershipId);
     }
 }

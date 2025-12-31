@@ -27,4 +27,12 @@ public class BungieApiService {
                 .bodyToMono(String.class)
                 .block();
     }
+    public String getProfile(int membershipType, String membershipId) {
+        return webClient.get()
+                .uri("/Destiny2/{membershipType}/Profile/{membershipId}/?components=100,200",
+                        membershipType, membershipId)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+    }
 }
