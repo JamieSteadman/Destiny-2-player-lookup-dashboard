@@ -5,3 +5,9 @@ export async function searchPlayer(name, code) {
     const result = await fetch(`${BASE_URL}/search?name=${name}&code=${code}`)
     return result.json()
 }
+
+// Get profile details for a player by membershipType and membershipId
+export async function getPlayerProfile(membershipType, membershipId) {
+    const result = await fetch(`${BASE_URL}/profile?membershipType=${membershipType}&membershipId=${membershipId}`)
+    return result.json()
+}
