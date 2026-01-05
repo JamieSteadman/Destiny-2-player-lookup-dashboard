@@ -1,12 +1,18 @@
 package com.jamie.destinytracker.controller;
 
-import com.jamie.destinytracker.service.BungieApiService;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.Map;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.jamie.destinytracker.service.BungieApiService;
 
 @RestController
 @RequestMapping("/api/bungie")
+@CrossOrigin(origins = "http://localhost:5173")  // Allow CORS from frontend dev server
 public class BungieController {
     private final BungieApiService bungieApiService;
 
@@ -14,7 +20,7 @@ public class BungieController {
         this.bungieApiService = bungieApiService;
     }
 
-    @PostMapping("/search")
+    @GetMapping("/search")
     public String searchBungieName(@RequestParam String name, @RequestParam int code) {
         return bungieApiService.searchByBungieName(name, code);
     }

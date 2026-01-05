@@ -1,8 +1,11 @@
+import { Routes, Route } from "react-router-dom"
+import PlayerSearchPage from "./pages/PlayerSearchPage"
+
 function App() {
   return (
-    <div style={{ padding: "2rem" }}>
-      <h1>Destiny 2 Player Lookup</h1>
-    </div>
+    <Routes>
+      <Route path="/" element={<PlayerSearchPage />} />
+    </Routes>
   )
 }
 
