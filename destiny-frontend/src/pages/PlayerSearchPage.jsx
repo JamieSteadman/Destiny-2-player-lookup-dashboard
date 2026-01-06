@@ -9,7 +9,7 @@ function PlayerSearchPage() {
     const [profile, setProfile] = useState(null)
 
     async function handleSearch() {
-        const data = await searchPlayer(name,code)
+        const data = await searchPlayer(name, code)
         setPlayer(data)
 
         if (data.Response && data.Response.length > 0) {
@@ -84,8 +84,6 @@ function PlayerSearchPage() {
                     }}>
                         <sup>♦</sup>{character.light}
                     </span>  
-                    <p>Class: {className}</p>
-                    <p>Light: {raceName}</p>
                 </div>
             )
         }
@@ -100,24 +98,77 @@ function PlayerSearchPage() {
     }
     
     return (
-        <div>
+        <div style={{
+            backgroundColor: "#1c1a2e",
+            color: "white",
+            minHeight: "100vh", 
+            display: "flex",
+            flexDirection: "column",  
+            alignItems: "center",  // Centers horizontally
+            justifyContent: "flex-start",
+            paddingTop: "10vh"  // Positions search elements in upper middle
+        }}>
             <h2>Search Player</h2>
 
-            <input
-                placeholder="Bungie Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-            />
-
-            <input
-                placeholder="Four-digit code"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-            />
-            <button onClick={handleSearch}>Search</button>
+            <div style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px"
+            }}>
+                <input
+                    placeholder="Bungie Name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    style={{
+                        width: "200px",
+                        height: "40px",
+                        borderRadius: "20px", // Oval shape
+                        border: "1px solid #646cff",
+                        padding: "0 15px",
+                        fontSize: "16px",
+                        backgroundColor: "#1a1a1a",
+                        color: "white",
+                        outline: "none"
+                    }}
+                />
+                <input
+                    placeholder="Four-digit code"
+                    value={code}
+                    onChange={(e) => setCode(e.target.value)}
+                    style={{
+                        width: "120px",
+                        height: "40px",
+                        borderRadius: "20px", // Oval shape
+                        border: "1px solid #646cff",
+                        padding: "0 15px",
+                        fontSize: "16px",
+                        backgroundColor: "#1a1a1a",
+                        color: "white",
+                        outline: "none"
+                    }}
+                />
+                <button
+                    onClick={handleSearch}
+                    style={{
+                        width: "50px",
+                        height: "50px",
+                        borderRadius: "50%",  // Circle shape
+                        border: "1px solid #646cff",
+                        backgroundColor: "#1a1a1a",
+                        color: "white",
+                        fontSize: "18px",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center"
+                    }}
+                >
+                    🔍
+                </button>
+            </div>
             {renderCharacterEmblems()}
 
-            {profile && <pre>{JSON.stringify(profile, null, 2)}</pre>}
+            {profile && <pre style={{ color: "white" }}>{JSON.stringify(profile, null, 2)}</pre>}
         </div>
     )
 }
