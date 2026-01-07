@@ -12,6 +12,7 @@ export async function getPlayerProfile(membershipType, membershipId) {
     return result.json()
 }
 
+// Get character details for a specific character based on characterId
 export async function getCharacterDetails(membershipType, membershipId, characterId) {
     const result = await fetch(`${BASE_URL}/character?membershipType=${membershipType}&membershipId=${membershipId}&characterId=${characterId}`)
     return result.json()

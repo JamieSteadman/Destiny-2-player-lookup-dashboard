@@ -1,12 +1,15 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { searchPlayer } from "../services/bungieApi"
 import { getPlayerProfile } from "../services/bungieApi"
+import { getCharacterDetails } from "../services/bungieApi"
 
 function PlayerSearchPage() {
     const [name, setName] = useState("")
     const [code, setCode] = useState("")
     const [player, setPlayer] = useState(null)
     const [profile, setProfile] = useState(null)
+    const navigate = useNavigate()
 
     async function handleSearch() {
         const data = await searchPlayer(name, code)
@@ -17,6 +20,17 @@ function PlayerSearchPage() {
             const profileData = await getPlayerProfile(firstAccount.membershipType, firstAccount.membershipId)
             setProfile(profileData)
         }
+    }
+    async function handleSelect(characterId) {
+        // Getting needed fields
+        const firstAccount = player.Response[0]
+        const membershipType = firstAccount.membershipType
+        const membershipId = firstAccount.membershipId
+        
+        const data = await getCharacterDetails(membershipType, membershipId, characterId);
+
+        // Navigate to loadout page, passing in character data
+        navigate('/loadout', { state: { characterData: data } }) 
     }
 
     // Helper function to render character emblems
@@ -37,10 +51,15 @@ function PlayerSearchPage() {
             const className = character.classType === 0 ? "Titan" : character.classType === 1 ? "Hunter" : "Warlock"
             const raceName = character.raceType === 0 ? "Human" : character.raceType === 1 ? "Awoken" : "Exo"
             characterElements.push(
-                <div key={characterId} style={{ marginBottom: "20px", position: "relative" }}>
+                <div 
+                    key={characterId} 
+                    style={{ marginBottom: "20px", position: "relative" }}
+                    onClick={() => handleSelect(characterId)}
+                >
                     <img 
                         src={emblemBackgroundUrl}
                         style={{ height: "100px", display: "block" }}
+                        className="emblem-image"
                     />    
                     
                     {/* Class name in top left of the emblem */}
