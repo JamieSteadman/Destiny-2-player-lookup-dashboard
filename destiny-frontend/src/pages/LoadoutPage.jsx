@@ -1,4 +1,5 @@
 import { useLocation } from "react-router-dom"
+import { useState } from "react"
 
 function LoadoutPage() {
     const location = useLocation()
@@ -9,9 +10,14 @@ function LoadoutPage() {
             backgroundColor: "#1c1a2e",
             color: "white",
             minHeight: "100vh",
-            padding: "20px"
+            flexDirection: "column",
+            padding: "20px",
+            alignItems: "center",
+            justifyContent: "flex-start"
         }}>
-            
+            <pre style={{ color: "white" }}>
+                {JSON.stringify(characterData.Response, null, 2)}
+            </pre>
         </div>
     )
 }

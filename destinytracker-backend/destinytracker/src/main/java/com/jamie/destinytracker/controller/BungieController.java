@@ -38,4 +38,10 @@ public class BungieController {
     ) {
         return bungieApiService.getCharacter(membershipType, membershipId, characterId);
     }
+
+    // Temporary
+    @GetMapping("/manifest")
+    public String getManifest() {
+        return bungieApiService.getManifest();
+    }
 }

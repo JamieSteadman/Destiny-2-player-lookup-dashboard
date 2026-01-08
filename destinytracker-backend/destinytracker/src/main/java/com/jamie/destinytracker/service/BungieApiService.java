@@ -1,12 +1,18 @@
 package com.jamie.destinytracker.service;
 
 import com.jamie.destinytracker.dto.BungieNameSearchRequest;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 
 @Service
@@ -20,6 +26,10 @@ public class BungieApiService {
                 .build();
     }
 
+    @PostConstruct
+    public void init() {
+        downloadItemDefsToDisk();
+    }
     public String searchByBungieName(String name, int code) {
         BungieNameSearchRequest body = new BungieNameSearchRequest(name, code);
 
@@ -48,6 +58,45 @@ public class BungieApiService {
                         "?components=201,205,300,302", membershipType, membershipId, characterId)
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<Map<String,Object>>(){})
+                .block();
+    }
+
+    // Downloads the item properties to disk from the URL provided in the manifest
+    public void downloadItemDefsToDisk() {
+        // Path from Destiny Manifest response to item definitions file
+        String itemDefPath = "https://www.bungie.net/common/destiny2_content/json/en/" +
+                "DestinyInventoryItemDefinition-53c99f00-7f5c-424e-b9ad-367ed50e3ab6.json";
+
+        Path outputPath = Paths.get("data/DestinyInventoryItemDefinition.json");
+
+        // Prevent redownloading the same file every time
+        if (Files.exists(outputPath)) {
+            return;
+        }
+        try {
+            Files.createDirectories(outputPath.getParent());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Writes item definition file directly to the output path, one chunk at a time
+        DataBufferUtils.write(
+                webClient.get()
+                        .uri(itemDefPath)
+                        .retrieve()
+                        .bodyToFlux(org.springframework.core.io.buffer.DataBuffer.class)
+                , outputPath
+        ).block();
+    }
+
+    // Return Destiny 2 manifest in JSON format
+    public String getManifest() {
+        String manifestUrl = "https://www.bungie.net/Platform/Destiny2/Manifest/";
+
+        return webClient.get()
+                .uri(manifestUrl)
+                .retrieve()
+                .bodyToMono(String.class)
                 .block();
     }
 }
