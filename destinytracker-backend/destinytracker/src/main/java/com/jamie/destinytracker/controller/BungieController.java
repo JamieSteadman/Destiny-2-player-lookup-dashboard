@@ -30,6 +30,10 @@ public class BungieController {
         return bungieApiService.getProfile(membershipType, membershipId);
     }
 
+    @GetMapping("/item-icons")
+    public String getItemIconPath(String itemHash) {
+        return bungieApiService.getItemIconPath(itemHash);
+    }
     @GetMapping("/character")
     public Map<String, Object> getCharacter (
             @RequestParam int membershipType,

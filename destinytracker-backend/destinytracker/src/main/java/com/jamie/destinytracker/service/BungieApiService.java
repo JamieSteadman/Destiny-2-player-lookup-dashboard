@@ -8,6 +8,8 @@ import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,6 +20,7 @@ import java.util.Map;
 @Service
 public class BungieApiService {
     private final WebClient webClient;
+    private JsonNode inventoryItemDefs;
 
     public BungieApiService(@Value("${bungie.api.key}") String apiKey) {
         this.webClient = WebClient.builder()
@@ -59,6 +62,26 @@ public class BungieApiService {
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<Map<String,Object>>(){})
                 .block();
+    }
+
+    // Takes the contents of the item definition file and returns a JsonNode
+    public String getItemIconPath(String itemHash) {
+        // Stores the contents of the data file into the jsonBytes array
+        Path path = Paths.get("data/DestinyInventoryItemDefinition.json");
+        try {
+            byte[] jsonBytes = Files.readAllBytes(path);
+
+            // Parses the JSON text into relevant JsonNode objects
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(jsonBytes);
+            JsonNode responseNode = root.get("Response");
+
+            JsonNode itemNode = responseNode.get(itemHash); // Gets JSON node attached to the specific item hash
+            String iconPath = itemNode.get("displayProperties").get("icon").asText(); // Retrieves icon path as String
+            return iconPath;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // Downloads the item properties to disk from the URL provided in the manifest
