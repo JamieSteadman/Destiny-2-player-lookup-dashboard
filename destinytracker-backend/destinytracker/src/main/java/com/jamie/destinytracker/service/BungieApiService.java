@@ -20,7 +20,7 @@ import java.util.Map;
 @Service
 public class BungieApiService {
     private final WebClient webClient;
-    private JsonNode inventoryItemDefs;
+    private JsonNode itemDefs;
 
     public BungieApiService(@Value("${bungie.api.key}") String apiKey) {
         this.webClient = WebClient.builder()
@@ -32,6 +32,15 @@ public class BungieApiService {
     @PostConstruct
     public void init() {
         downloadItemDefsToDisk();
+        // Fills the itemDefBytes array with the item defs JSON file
+        Path path = Paths.get("data/DestinyInventoryItemDefinition.json");
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            byte [] itemDefBytes = Files.readAllBytes(path);
+            itemDefs = mapper.readTree(itemDefBytes);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
     public String searchByBungieName(String name, int code) {
         BungieNameSearchRequest body = new BungieNameSearchRequest(name, code);
@@ -67,21 +76,11 @@ public class BungieApiService {
     // Takes the contents of the item definition file and returns a JsonNode
     public String getItemIconPath(String itemHash) {
         // Stores the contents of the data file into the jsonBytes array
-        Path path = Paths.get("data/DestinyInventoryItemDefinition.json");
-        try {
-            byte[] jsonBytes = Files.readAllBytes(path);
+        // Parses the JSON text into relevant JsonNode objects
 
-            // Parses the JSON text into relevant JsonNode objects
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode root = mapper.readTree(jsonBytes);
-            JsonNode responseNode = root.get("Response");
-
-            JsonNode itemNode = responseNode.get(itemHash); // Gets JSON node attached to the specific item hash
-            String iconPath = itemNode.get("displayProperties").get("icon").asText(); // Retrieves icon path as String
-            return iconPath;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        JsonNode itemNode = itemDefs.get(itemHash); // Gets JSON node attached to the specific item hash
+        String iconPath = itemNode.get("displayProperties").get("icon").asText(); // Retrieves icon path as String
+        return iconPath;
     }
 
     // Downloads the item properties to disk from the URL provided in the manifest

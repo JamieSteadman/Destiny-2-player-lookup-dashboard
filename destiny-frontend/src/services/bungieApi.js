@@ -17,3 +17,9 @@ export async function getCharacterDetails(membershipType, membershipId, characte
     const result = await fetch(`${BASE_URL}/character?membershipType=${membershipType}&membershipId=${membershipId}&characterId=${characterId}`)
     return result.json()
 }
+
+export async function getIconUrl(itemHash) {
+    const itemHashString = String(itemHash)
+    const result = await fetch (`${BASE_URL}/item-icons?itemHash=${itemHashString}`)
+    return result.text()
+}
