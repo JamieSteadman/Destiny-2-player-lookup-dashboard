@@ -18,8 +18,16 @@ export async function getCharacterDetails(membershipType, membershipId, characte
     return result.json()
 }
 
+// Get icon URL path for an item based on its itemHash
 export async function getIconUrl(itemHash) {
     const itemHashString = String(itemHash)
     const result = await fetch (`${BASE_URL}/item-icons?itemHash=${itemHashString}`)
     return result.text()
+}
+
+// Get item name for an item based on its itemHash
+export async function getItemName(itemHash) {
+    const itemHashString = String(itemHash);
+    const result = await fetch(`${BASE_URL}/item-name?itemHash=${itemHashString}`);
+    return result.text();
 }

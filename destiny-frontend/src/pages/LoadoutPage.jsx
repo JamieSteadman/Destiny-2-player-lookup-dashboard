@@ -1,6 +1,7 @@
 import { useLocation } from "react-router-dom"
 import { useEffect, useState } from "react"
 import { getIconUrl } from "../services/bungieApi"
+import { getItemName } from "../services/bungieApi"
 
 function LoadoutPage() {
     // Access character data passed from previous page
@@ -50,11 +51,15 @@ function LoadoutPage() {
             // Fetch icon path using item hash
             const iconPath = await getIconUrl(itemHash)
 
+            // Fetch item name using item hash
+            const name = await getItemName(itemHash)
+
             // Store item data (hash, instance ID, and icon URL)
             const item = {
                 itemHash,
                 itemInstanceId,
-                iconUrl: `https://www.bungie.net${iconPath}`
+                iconUrl: `https://www.bungie.net${iconPath}`,
+                itemName: name
             }
 
             // Subclass item is at index 11
@@ -75,12 +80,14 @@ function LoadoutPage() {
     }
 
     // Render detailed item info box for a selected item
-    function renderItemInfo(itemInstanceId) {
+    function renderItemInfo(itemInstanceId, itemName) {
         // Lookup instance-specific data using instance ID
         const instanceData =
             characterData.Response.itemComponents.instances.data[itemInstanceId]
 
-        if (!instanceData) return null
+        if (!instanceData) {
+            return null
+        }
 
         const damageType =
             DAMAGE_TYPES[instanceData.damageType] ?? "None"
@@ -103,6 +110,13 @@ function LoadoutPage() {
                     zIndex: 10
                 }}
             >
+                <div>
+                    <p style={{
+                        fontSize:"25px",
+                        margin: "0px"}}>
+                            {itemName}
+                    </p>
+                </div>
                 <div><strong>Damage:</strong> {damageType}</div>
                 <div><strong>Power:</strong> {powerLevel}</div>
             </div>
@@ -137,7 +151,7 @@ function LoadoutPage() {
 
                 {/* Show item info only if this item is selected */}
                 {selectedItemId === item.itemInstanceId &&
-                    renderItemInfo(item.itemInstanceId)}
+                    renderItemInfo(item.itemInstanceId, item.itemName)}
             </div>
         )
     }

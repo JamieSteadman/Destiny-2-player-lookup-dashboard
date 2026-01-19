@@ -73,7 +73,7 @@ public class BungieApiService {
                 .block();
     }
 
-    // Takes the contents of the item definition file and returns a JsonNode
+    // Returns the icon path of an item given item hash
     public String getItemIconPath(String itemHash) {
         // Stores the contents of the data file into the jsonBytes array
         // Parses the JSON text into relevant JsonNode objects
@@ -81,6 +81,12 @@ public class BungieApiService {
         JsonNode itemNode = itemDefs.get(itemHash); // Gets JSON node attached to the specific item hash
         String iconPath = itemNode.get("displayProperties").get("icon").asText(); // Retrieves icon path as String
         return iconPath;
+    }
+    // Returns the name of an item given item hash
+    public String getItemName(String itemHash) {
+        JsonNode itemNode = itemDefs.get(itemHash);
+        String name = itemNode.get("displayProperties").get("name").asText();
+        return name;
     }
 
     // Returns the stats of a weapon given its hash value

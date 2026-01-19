@@ -49,4 +49,9 @@ public class BungieController {
     public String getManifest() {
         return bungieApiService.getManifest();
     }
+
+    @GetMapping("/item-name")
+    public String getItemName(@RequestParam String itemHash) {
+        return bungieApiService.getItemName(itemHash);
+    }
 }
