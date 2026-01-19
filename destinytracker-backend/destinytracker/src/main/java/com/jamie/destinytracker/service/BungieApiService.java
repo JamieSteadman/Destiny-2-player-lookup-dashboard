@@ -32,7 +32,7 @@ public class BungieApiService {
     @PostConstruct
     public void init() {
         downloadItemDefsToDisk();
-        // Fills the itemDefBytes array with the item defs JSON file
+        // Maps the itemDefs JsonNode to the item defs JSON file
         Path path = Paths.get("data/DestinyInventoryItemDefinition.json");
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -82,6 +82,14 @@ public class BungieApiService {
         String iconPath = itemNode.get("displayProperties").get("icon").asText(); // Retrieves icon path as String
         return iconPath;
     }
+
+    // Returns the stats of a weapon given its hash value
+    /*public String getWeaponStats(String itemHash) {
+        JsonNode itemNode = itemDefs.get(itemHash);
+        JsonNode statsNode = itemNode.path("stats").path("stats");
+
+        Map<String, JsonNode> statsMap = (Map<String, JsonNode>) statsNode.();
+    }*/
 
     // Downloads the item properties to disk from the URL provided in the manifest
     public void downloadItemDefsToDisk() {

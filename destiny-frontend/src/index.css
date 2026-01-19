@@ -23,10 +23,10 @@ a:hover {
 }
 .emblem-image {
   transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .emblem-image:hover {
-  cursor: pointer;
   filter: grayscale(50%);
   opacity: 0.8;
 }
